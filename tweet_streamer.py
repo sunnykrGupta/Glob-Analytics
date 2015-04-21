@@ -34,55 +34,6 @@ class streamListen(StreamListener):
             stream.disconnect()
         return false
 
-
-
-def scrape_data(tweet):
-    #tweet = json.loads(tweet)
-    #tweet = json.dumps(parsed, indent=4)
-    #new file for writing wrangle data
-    wrfile = open('wrangle_1.csv', 'a')
-    if (tweet["coordinates"] == None):
-        wrfile.write("coordinates : null ")
-    else:
-        wrfile.write("coordinates : " + str(tweet["coordinates"]))
-
-    if (tweet["user"]["location"] == ""):
-        wrfile.write(" user.location : " + "__")
-    else:
-        wrfile.write(" user.location : " + str(tweet["user"]["location"]))
-
-    wrfile.write(" user.geo_enabled : " + str(tweet["user"]["geo_enabled"]))
-
-    if (tweet["geo"] == None):
-        wrfile.write(" geo : null ")
-    else:
-        wrfile.write(" geo : " + str(tweet["geo"]))
-
-    if (tweet["place"] == None):
-        wrfile.write(" place : null ")
-    else:
-        wrfile.write(" place : " + str(tweet["place"]))
-
-    wrfile.write("\n")
-    wrfile.close()
-    #print "More prints :::::"
-
-def wrangle_tweets():
-    ifile = open('raw_tweets.csv', 'r')
-    for tweet in ifile:
-        #print tweet
-        #loading data in proper json format
-        #beautyfying our json-data
-        #b_tweet = json.dumps(parsed, indent=4)
-        if (tweet != "\n"):
-            tweet = json.loads(tweet)
-            #print tweet["created_at"]
-            scrape_data(tweet)
-        else:
-            pass
-
-
-
 if __name__ ==  '__main__':
     #This handles Twitter authentication and the connection to Stream API
     auth = OAuthHandler(consumer_key, consumer_secret)

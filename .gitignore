@@ -2,6 +2,11 @@
 __pycache__/
 *.py[cod]
 
+# Files ignore
+*.json
+*.csv
+
+
 # C extensions
 *.so
 

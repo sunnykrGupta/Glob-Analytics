@@ -12,7 +12,7 @@ db  = client.main_db
 
 #reading from file where data is saved in raw format
 path = "../../Glob_Analytics/politics/"
-fpath = os.path.join(path, "raw_political_tweets.json")
+fpath = os.path.join(path, "raw_political_tweets_2.json")
 
 ifile = open(fpath, 'r')
 # list to append all tweets
@@ -27,7 +27,7 @@ def write_to_db():
         else:
             pass
     print " Total lines read :: %d" % (len(raw_political_tweets))
-    res = db.raw_politics_data.insert_many(raw_political_tweets)
+    res = db.raw_politics_data_2.insert_many(raw_political_tweets)
     ln_id = res.inserted_ids
     print "Total Data inserted into collection :: %d" % (len(ln_id))
 

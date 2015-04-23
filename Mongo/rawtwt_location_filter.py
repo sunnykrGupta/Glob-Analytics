@@ -57,7 +57,7 @@ def clean_tweet(tweet):
 
 def read_raw_data():
     # Querying all data documents
-    raw_twt = db.raw_politics_data.find({}, {'__id' : False})
+    raw_twt = db.raw_politics_data_2.find({}, {'__id' : False})
     #total tweets in DB
     print "Total documents - ", raw_twt.count()
 
@@ -77,7 +77,7 @@ def read_raw_data():
         else:
             pass
     #writing cleaned data into collection (politic_filtr)
-    results = db.politic_filtr.insert_many(cln_tweets)
+    results = db.politic_filtr_2.insert_many(cln_tweets)
     tot_insertion = results.inserted_ids
     print "Total insertion into collection :: %d" % (len(tot_insertion))
     print "Raw Politics Data Filtering Done....!!!"

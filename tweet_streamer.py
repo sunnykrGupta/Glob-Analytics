@@ -19,7 +19,7 @@ class streamListen(StreamListener):
         try:
             print i
             i += 1
-            infile = open('raw_political_tweets.json', 'a')
+            infile = open('raw_economy_tweets.json', 'a')
             infile.write(data)
             infile.write('\n')
             infile.close()
@@ -46,8 +46,10 @@ if __name__ ==  '__main__':
     stream.filter(track=['Government', 'Politics'])
     #Data receiving related to Tourism
     stream.filter(track=['tourism','travel'])
+    '''
     #Data receiving related to Economy, Market
     stream.filter(track=['economy', 'market'])
+    '''
     #Data receiving related to Religion and Beliefs
     stream.filter(track=['religion', 'beliefs'])
     '''

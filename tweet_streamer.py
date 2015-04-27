@@ -19,14 +19,14 @@ class streamListen(StreamListener):
         try:
             print i
             i += 1
-            infile = open('raw_political_tweets.json', 'a')
+            infile = open('raw_tourism_tweets.json', 'a')
             infile.write(data)
             infile.write('\n')
             infile.close()
             return True
         except BaseException, e:
             print 'failed data,', str(e)
-            time.sleep(25)
+            time.sleep(15)
 
     def on_error(self, status):
         print status, "API Error !!!"
@@ -41,11 +41,12 @@ if __name__ ==  '__main__':
     stream = Stream(auth, streamListen())
 
     print "Tracking Starts:: Streaming ON"
-    '''
+
     #Data receiving related to Politics, Government
-    stream.filter(track=['Government', 'Politics'])
+    #stream.filter(track=['Government', 'Politics'])
     #Data receiving related to Tourism
     stream.filter(track=['tourism','travel'])
+    '''
     #Data receiving related to Economy, Market
     stream.filter(track=['economy', 'market'])
     #Data receiving related to Religion and Beliefs

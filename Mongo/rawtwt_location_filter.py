@@ -30,7 +30,7 @@ def clean_tweet(tweet):
         if (tweet["coordinates"] != None):
             t["coordinates"] = tweet["coordinates"]
             t["geo"] = tweet["geo"]
-            if("place" in tweet):
+            if("place" in tweet and tweet["place"] != None):
                 t["place"] = {}
                 t["place"]["country"] = tweet["place"]["country"]
                 t["place"]["name"] = tweet["place"]["name"]
@@ -63,11 +63,13 @@ def read_raw_data():
     raw_twt = db.raw_tourism_data_2.find({}, {'__id' : False})
     #total tweets in DB
     print "Total documents - ", raw_twt.count()
-
+    cnt = 0
     for twt in raw_twt:
         #print type(twt)
         rawtweet = twt
         #clean module
+        cnt += 1
+        print "Twt :: ", cnt
         tweet = clean_tweet(rawtweet)
         if(tweet):
             # contains text and lang
@@ -80,7 +82,7 @@ def read_raw_data():
         else:
             pass
     #writing cleaned data into collection (politic_filtr)
-    #results = db.t_tourism_filter_2.insert_many(cln_tweets)
+    results = db.t_tourism_filter_2.insert_many(cln_tweets)
     tot_insertion = results.inserted_ids
     print "Total insertion into collection :: %d" % (len(tot_insertion))
     print "Raw Politics Data Filtering Done....!!!"

@@ -25,9 +25,9 @@ def process_db():
         cnt += 1
         if(cnt <= 10000):
             col_1.append(r)
+        '''
         elif(cnt > 10000 and cnt <= 22000):
             col_2.append(r)
-        '''
         elif(cnt > 20000 and cnt <= 30000):
             col_3.append(r)
         elif(cnt > 7350 and cnt <= 9800):
@@ -42,9 +42,9 @@ def process_db():
     #insert the batch into diff. collections
     db_batch.col_1.insert_many(col_1)
     print "Insertion Done into col_1!!"
+    '''
     db_batch.col_2.insert_many(col_2)
     print "Insertion Done into col_2!!"
-    '''
     db_batch.col_3.insert_many(col_3)
     print "Insertion Done into col_3!!"
     db_batch.col_4.insert_many(col_4)

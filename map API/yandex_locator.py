@@ -5,50 +5,51 @@ import json
 import time
 import string
 import os
-from geopy.geocoders import GoogleV3
+from geopy.geocoders import Yandex
 from pymongo import MongoClient
+
 
 #pymongo db operation client connection
 client = MongoClient('localhost', 27017)
 
-#Assign api key
-api = os.getenv('api_key', None)
+#Yandex map
+geolocator = Yandex(lang='en_US')
 
-#Google map api_key
-geolocator = GoogleV3(api_key=api)
 
-#filter these from GoogleV3 json data
-require = ["country", "administrative_area_level_1", "administrative_area_level_2"]
-
-def clean_V3_json(data):
+# 8703 check db how much data has been written [write from file]
+def clean_yandex_json(data, geo):
     t = {}
-    t["location"]  = data["geometry"]["location"]
+    #for storing Geo - coordinates
+    t["location"]  = {}
+    t["location"]["lat"]  = geo[0]
+    t["location"]["lng"]  = geo[1]
+
+    #place Info
     t["place"] = {}
-    for addr in data["address_components"]:
-        #Match types with require list
-        if(set(addr["types"]).intersection(require)):
-            if(require[0] in addr["types"]):
-                t["place"]["country"] = addr["long_name"]
-            elif(require[1] in addr["types"]):
-                t["place"]["state"] = addr["long_name"]
-            elif(require[2] in addr["types"]):
-                t["place"]["name"] = addr["long_name"]
-        else:
-            pass
-    #return dataobj
+    address = data["metaDataProperty"]["GeocoderMetaData"]["AddressDetails"]["Country"]
+    if("CountryName" in address):
+        t["place"]["country"] = address["CountryName"]
+
+    if("AddressLine" in address):
+        t["place"]["name"] = address["AddressLine"].split(",")[-1].strip(" ")
+
     return t
+
 
 def find_location(address):
     try:
-        location = geolocator.geocode(address, timeout=10, language='en')
+        location = geolocator.geocode(address, timeout=10)
         time.sleep(1)
         if location != None:
-            t = clean_V3_json(location.raw)
+            geo = []
+            geo.append(location.latitude)
+            geo.append(location.longitude)
+            t = clean_yandex_json(location.raw, geo)
             return t
         else:
             return False
     except:
-        print "Exception Raised!!"
+        print "Caught Exception !!!!:"
         return False
 
 def data_iterator(r):
@@ -74,14 +75,14 @@ def data_iterator(r):
         return r
     else:
         if("location" in r):
-            print "Location to V3 :: " , r["location"]
+            print "Location to OSM :: " , r["location"]
             result = find_location(r["location"])
             if(result == False and "retweet" in r and "location" in r["retweet"]):
                 result = find_location(r["retweet"]["location"])
         else:
             if("retweet" in r and "location" in r["retweet"]):
                 result = find_location(r["retweet"]["location"])
-                print "Retweet_LOC to V3:: ", r["retweet"]["location"]
+                print "Retweet_LOC to OSM:: ", r["retweet"]["location"]
         if(result != False):
             r["location"] = result["location"]
             r["place"] = result["place"]
@@ -95,29 +96,30 @@ def data_iterator(r):
 def collect_data():
     #store processed tweets
     clean_twt = []
-    fw = open("rel_4.json", "a")
+    fw = open("tour_3.json", "a")
     cnt = 0
     rejected = 0
-    db = client.batch_db
+    db_b = client.batch_db
+    #db_m = client.main_db
     #Fetching from db
-    collection = db.col_4.find({}, {'_id' : False })
+    collection = db_b.col_1.find({}, {'_id' : False })
+    #collection = db_m.t_tourism_filter.find({}, {'_id' : False })
     print "Collection DOC's for processing %d tweets." % (collection.count())
 
     for raw in collection:
         cnt += 1
         print "Tweet %d ::- " % (cnt)
-        if(cnt > 2085):
-            twt = data_iterator(raw)
-            if(twt != False):
-                json.dump(twt, fw)
-                fw.write("\n")
-                clean_twt.append(twt)
-                db.col_4_test.insert(twt)
-            else:
-                rejected += 1
-                print "Tweet rejected!!"
+        #if(cnt > 4488):
+        twt = data_iterator(raw)
+        if(twt != False):
+            json.dump(twt, fw)
+            clean_twt.append(twt)
+            db_b.col_1_test.insert(twt)
+        else:
+            rejected += 1
+            print "Tweet rejected!!"
     #Data insertion into newdb (collection)
-    db.col_4_loc.insert_many(clean_twt)
+    db_b.col_1_loc.insert_many(clean_twt)
     print "Data Inserted into Collection"
     print "%d Processing Done!!" % (cnt)
     print "%d Tweets Rejected (False location)!!" % (rejected)
@@ -125,3 +127,4 @@ def collect_data():
 
 if __name__ == "__main__":
     collect_data()
+

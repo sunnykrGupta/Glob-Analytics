@@ -5,50 +5,47 @@ import json
 import time
 import string
 import os
-from geopy.geocoders import GoogleV3
+from geopy.geocoders import GeoNames
 from pymongo import MongoClient
+
 
 #pymongo db operation client connection
 client = MongoClient('localhost', 27017)
 
 #Assign api key
-api = os.getenv('api_key', None)
+username = os.getenv('osm_username', None)
 
-#Google map api_key
-geolocator = GoogleV3(api_key=api)
+#GeoName map username
+geolocator = GeoNames(username=username)
 
-#filter these from GoogleV3 json data
-require = ["country", "administrative_area_level_1", "administrative_area_level_2"]
-
-def clean_V3_json(data):
+def clean_geoname_json(data):
     t = {}
-    t["location"]  = data["geometry"]["location"]
+    #for storing Geo - coordinates
+    t["location"]  = {}
+    t["location"]["lat"]  = data["lat"]
+    t["location"]["lng"]  = data["lng"]
+
+    #place Info
     t["place"] = {}
-    for addr in data["address_components"]:
-        #Match types with require list
-        if(set(addr["types"]).intersection(require)):
-            if(require[0] in addr["types"]):
-                t["place"]["country"] = addr["long_name"]
-            elif(require[1] in addr["types"]):
-                t["place"]["state"] = addr["long_name"]
-            elif(require[2] in addr["types"]):
-                t["place"]["name"] = addr["long_name"]
-        else:
-            pass
-    #return dataobj
+    if("countryName" in data):
+        t["place"]["country"] = data["countryName"]
+
+    if("name" in data):
+        t["place"]["name"] = data["name"]
+
     return t
 
 def find_location(address):
     try:
-        location = geolocator.geocode(address, timeout=10, language='en')
+        location = geolocator.geocode(address, timeout=10)
         time.sleep(1)
         if location != None:
-            t = clean_V3_json(location.raw)
+            t = clean_geoname_json(location.raw)
             return t
         else:
             return False
     except:
-        print "Exception Raised!!"
+        print "API Error Reported!!"
         return False
 
 def data_iterator(r):
@@ -74,14 +71,14 @@ def data_iterator(r):
         return r
     else:
         if("location" in r):
-            print "Location to V3 :: " , r["location"]
+            print "Location to GeoName :: " , r["location"]
             result = find_location(r["location"])
             if(result == False and "retweet" in r and "location" in r["retweet"]):
                 result = find_location(r["retweet"]["location"])
         else:
             if("retweet" in r and "location" in r["retweet"]):
                 result = find_location(r["retweet"]["location"])
-                print "Retweet_LOC to V3:: ", r["retweet"]["location"]
+                print "Retweet_LOC to GeoName:: ", r["retweet"]["location"]
         if(result != False):
             r["location"] = result["location"]
             r["place"] = result["place"]
@@ -95,29 +92,28 @@ def data_iterator(r):
 def collect_data():
     #store processed tweets
     clean_twt = []
-    fw = open("rel_4.json", "a")
+    fw = open("tour_1.json", "a")
     cnt = 0
     rejected = 0
     db = client.batch_db
     #Fetching from db
-    collection = db.col_4.find({}, {'_id' : False })
+    collection = db.col_1.find({}, {'_id' : False })
     print "Collection DOC's for processing %d tweets." % (collection.count())
 
     for raw in collection:
         cnt += 1
         print "Tweet %d ::- " % (cnt)
-        if(cnt > 2085):
+        if(cnt > 3505):
             twt = data_iterator(raw)
             if(twt != False):
                 json.dump(twt, fw)
-                fw.write("\n")
                 clean_twt.append(twt)
-                db.col_4_test.insert(twt)
+                db.col_1_test.insert(twt)
             else:
                 rejected += 1
                 print "Tweet rejected!!"
     #Data insertion into newdb (collection)
-    db.col_4_loc.insert_many(clean_twt)
+    db.col_1_loc.insert_many(clean_twt)
     print "Data Inserted into Collection"
     print "%d Processing Done!!" % (cnt)
     print "%d Tweets Rejected (False location)!!" % (rejected)

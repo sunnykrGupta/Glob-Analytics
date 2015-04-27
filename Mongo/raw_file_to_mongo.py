@@ -17,13 +17,12 @@ raw_tourism_tweets = []
 
 
 def write_to_db():
-    twtcnt = 0
+    twtcnt, cnt = 0, 0
     for data in ifile:
-        if data != "\n" and twtcnt <= 26000:
+        if data != "\n":
             #loading data in proper json format
             parsed_twt = json.loads(data)
             raw_tourism_tweets.append(parsed_twt)
-            twtcnt += 1
         else:
             pass
     print " Total lines read :: %d" % (len(raw_tourism_tweets))

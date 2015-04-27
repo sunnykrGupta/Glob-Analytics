@@ -41,15 +41,16 @@ def clean_V3_json(data):
 def find_location(address):
     try:
         location = geolocator.geocode(address, timeout=10, language='en')
-        time.sleep(1.0)
+        time.sleep(1)
         if location != None:
             t = clean_V3_json(location.raw)
             return t
         else:
             return False
     except:
-        print "Error:"
+        print "Exception Raised!!"
         return False
+
 def data_iterator(r):
     result = None
     if("geo" in r):
@@ -94,28 +95,29 @@ def data_iterator(r):
 def collect_data():
     #store processed tweets
     clean_twt = []
-    fw = open("pol_1.json", "a")
+    fw = open("rel_4.json", "a")
     cnt = 0
     rejected = 0
     db = client.batch_db
     #Fetching from db
-    collection = db.pol_1.find({}, {'_id' : False })
+    collection = db.col_4.find({}, {'_id' : False })
     print "Collection DOC's for processing %d tweets." % (collection.count())
 
     for raw in collection:
         cnt += 1
         print "Tweet %d ::- " % (cnt)
-        if(cnt > 607):
+        if(cnt > 2085):
             twt = data_iterator(raw)
             if(twt != False):
                 json.dump(twt, fw)
                 fw.write("\n")
                 clean_twt.append(twt)
+                db.col_4_test.insert(twt)
             else:
                 rejected += 1
                 print "Tweet rejected!!"
     #Data insertion into newdb (collection)
-    db.pol_1_loc.insert_many(clean_twt)
+    db.col_4_loc.insert_many(clean_twt)
     print "Data Inserted into Collection"
     print "%d Processing Done!!" % (cnt)
     print "%d Tweets Rejected (False location)!!" % (rejected)

@@ -8,8 +8,8 @@ library(leaflet)
 
 df <- read.csv(file="tweets.csv",head=TRUE,sep=",")
 df = data.frame(
-  lat = df$latitude,
-  lng = df$longitude
+  lat = df$lat,
+  lng = df$lng
 )
 m = leaflet(df) %>% addTiles()
 m %>% addCircleMarkers(radius = ~size, color = ~color, fill = FALSE)

@@ -5,47 +5,51 @@ import json
 import time
 import string
 import os
-from geopy.geocoders import GeoNames
+from geopy.geocoders import Yandex
 from pymongo import MongoClient
 
 
 #pymongo db operation client connection
 client = MongoClient('localhost', 27017)
 
-#Assign api key
-username = os.getenv('osm_username', None)
+#Yandex map
+geolocator = Yandex(lang='en_US')
 
-#OSM map username
-geolocator = GeoNames(username=username)
 
-def clean_OSM_json(data):
+# 8703 check db how much data has been written [write from file]
+def clean_yandex_json(data, geo):
     t = {}
     #for storing Geo - coordinates
     t["location"]  = {}
-    t["location"]["lat"]  = data["lat"]
-    t["location"]["lng"]  = data["lng"]
+    t["location"]["lat"]  = geo[0]
+    t["location"]["lng"]  = geo[1]
 
     #place Info
     t["place"] = {}
-    if("countryName" in data):
-        t["place"]["country"] = data["countryName"]
+    address = data["metaDataProperty"]["GeocoderMetaData"]["AddressDetails"]["Country"]
+    if("CountryName" in address):
+        t["place"]["country"] = address["CountryName"]
 
-    if("name" in data):
-        t["place"]["name"] = data["name"]
+    if("AddressLine" in address):
+        t["place"]["name"] = address["AddressLine"].split(",")[-1].strip(" ")
 
     return t
+
 
 def find_location(address):
     try:
         location = geolocator.geocode(address, timeout=10)
-        time.sleep(2)
+        time.sleep(1)
         if location != None:
-            t = clean_OSM_json(location.raw)
+            geo = []
+            geo.append(location.latitude)
+            geo.append(location.longitude)
+            t = clean_yandex_json(location.raw, geo)
             return t
         else:
             return False
     except:
-        print "Error:"
+        print "Caught Exception !!!!:"
         return False
 
 def data_iterator(r):
@@ -92,27 +96,30 @@ def data_iterator(r):
 def collect_data():
     #store processed tweets
     clean_twt = []
-    fw = open("pol_4.json", "a")
+    fw = open("tour_3.json", "a")
     cnt = 0
     rejected = 0
-    db = client.batch_db
+    db_b = client.batch_db
+    #db_m = client.main_db
     #Fetching from db
-    collection = db.pol_4.find({}, {'_id' : False })
+    collection = db_b.col_1.find({}, {'_id' : False })
+    #collection = db_m.t_tourism_filter.find({}, {'_id' : False })
     print "Collection DOC's for processing %d tweets." % (collection.count())
 
     for raw in collection:
         cnt += 1
         print "Tweet %d ::- " % (cnt)
+        #if(cnt > 4488):
         twt = data_iterator(raw)
         if(twt != False):
             json.dump(twt, fw)
             clean_twt.append(twt)
-            db.pol_4_test.insert(twt)
+            db_b.col_1_test.insert(twt)
         else:
             rejected += 1
             print "Tweet rejected!!"
     #Data insertion into newdb (collection)
-    db.pol_4_loc.insert_many(clean_twt)
+    db_b.col_1_loc.insert_many(clean_twt)
     print "Data Inserted into Collection"
     print "%d Processing Done!!" % (cnt)
     print "%d Tweets Rejected (False location)!!" % (rejected)
@@ -120,3 +127,4 @@ def collect_data():
 
 if __name__ == "__main__":
     collect_data()
+

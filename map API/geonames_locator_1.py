@@ -15,10 +15,10 @@ client = MongoClient('localhost', 27017)
 #Assign api key
 username = os.getenv('osm_username', None)
 
-#OSM map username
+#GeoName map username
 geolocator = GeoNames(username=username)
 
-def clean_OSM_json(data):
+def clean_geoname_json(data):
     t = {}
     #for storing Geo - coordinates
     t["location"]  = {}
@@ -40,12 +40,12 @@ def find_location(address):
         location = geolocator.geocode(address, timeout=10)
         time.sleep(1)
         if location != None:
-            t = clean_OSM_json(location.raw)
+            t = clean_geoname_json(location.raw)
             return t
         else:
             return False
     except:
-        print "Error:"
+        print "API Error Reported!!"
         return False
 
 def data_iterator(r):
@@ -71,14 +71,14 @@ def data_iterator(r):
         return r
     else:
         if("location" in r):
-            print "Location to OSM :: " , r["location"]
+            print "Location to GeoName :: " , r["location"]
             result = find_location(r["location"])
             if(result == False and "retweet" in r and "location" in r["retweet"]):
                 result = find_location(r["retweet"]["location"])
         else:
             if("retweet" in r and "location" in r["retweet"]):
                 result = find_location(r["retweet"]["location"])
-                print "Retweet_LOC to OSM:: ", r["retweet"]["location"]
+                print "Retweet_LOC to GeoName:: ", r["retweet"]["location"]
         if(result != False):
             r["location"] = result["location"]
             r["place"] = result["place"]
@@ -92,27 +92,28 @@ def data_iterator(r):
 def collect_data():
     #store processed tweets
     clean_twt = []
-    fw = open("pol_7.json", "a")
+    fw = open("tour_1.json", "a")
     cnt = 0
     rejected = 0
     db = client.batch_db
     #Fetching from db
-    collection = db.pol_7.find({}, {'_id' : False })
+    collection = db.col_1.find({}, {'_id' : False })
     print "Collection DOC's for processing %d tweets." % (collection.count())
 
     for raw in collection:
         cnt += 1
         print "Tweet %d ::- " % (cnt)
-        twt = data_iterator(raw)
-        if(twt != False):
-            json.dump(twt, fw)
-            clean_twt.append(twt)
-            db.pol_7_test.insert(twt)
-        else:
-            rejected += 1
-            print "Tweet rejected!!"
+        if(cnt > 3505):
+            twt = data_iterator(raw)
+            if(twt != False):
+                json.dump(twt, fw)
+                clean_twt.append(twt)
+                db.col_1_test.insert(twt)
+            else:
+                rejected += 1
+                print "Tweet rejected!!"
     #Data insertion into newdb (collection)
-    db.pol_7_loc.insert_many(clean_twt)
+    db.col_1_loc.insert_many(clean_twt)
     print "Data Inserted into Collection"
     print "%d Processing Done!!" % (cnt)
     print "%d Tweets Rejected (False location)!!" % (rejected)

@@ -19,7 +19,7 @@ class streamListen(StreamListener):
         try:
             print i
             i += 1
-            infile = open('raw_tourism_tweets.json', 'a')
+            infile = open('raw_economy_tweets.json', 'a')
             infile.write(data)
             infile.write('\n')
             infile.close()
@@ -41,12 +41,11 @@ if __name__ ==  '__main__':
     stream = Stream(auth, streamListen())
 
     print "Tracking Starts:: Streaming ON"
-
+    '''
     #Data receiving related to Politics, Government
     #stream.filter(track=['Government', 'Politics'])
     #Data receiving related to Tourism
     stream.filter(track=['tourism','travel'])
-    '''
     #Data receiving related to Economy, Market
     stream.filter(track=['economy', 'market'])
     #Data receiving related to Religion and Beliefs

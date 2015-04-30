@@ -1,7 +1,8 @@
-"""Spelling Corrector.
 
-Copyright 2007 Peter Norvig.
-Open source code under MIT license
+"""
+  Spelling Corrector.
+  Copyright 2007 Peter Norvig.
+  Open source code under MIT license
 """
 
 import re, collections

@@ -18,6 +18,9 @@ client = MongoClient('localhost', 27017)
 maindb = client.main_db
 batchdb = client.batch_db
 
+'''
+    tweet_clean remove url and tagged @user from tweets
+'''
 def tweet_clean(tweet):
     #REGEX for tweet url removal
     tweet = re.sub(r'(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'".,<>?«»“”‘’]))', '', tweet)
@@ -26,7 +29,10 @@ def tweet_clean(tweet):
 
     return tweet
 
-
+'''
+    clean_text remove any unicode characters and punctuation
+    from tweets to make clean text for sentiment evaluation.
+'''
 def clean_text(text):
     #REGEX for tweet unicode removal
     text =  re.sub(r'(\\u[0-9A-Fa-f]+)', '', text)
@@ -37,7 +43,11 @@ def clean_text(text):
 
     return text
 
-
+'''
+   This module is imported from spell.py file that used open sourced
+   spell correction algorithm using corpus in big.txt file.
+   Gives 83+ % accuracy according to Peter Norvig.
+'''
 def spell_correct(tweet):
     #Spitting the sentence into words
     words = tweet.split()
@@ -49,6 +59,11 @@ def spell_correct(tweet):
 
     return text
 
+
+'''
+    Function that check if lang is not 'en' ie, english,
+    coverts using TextBlob wrapper that uses google translator api.
+'''
 def process_tweet(tweet, translate):
     #Extract tweet
     tweet_txt = tweet["text"]
@@ -68,13 +83,15 @@ def process_tweet(tweet, translate):
         cleantxt = cleantxt.decode('utf-8')
     else:
         cleantxt = clean_text(tweet_txt)
-
     #Spell Correctify of tweet
     cleantxt = spell_correct(cleantxt)
 
     return cleantxt
 
-
+'''
+    Main Function to fetch records from collection and
+    apply above operation and get the sentiment score.
+'''
 def collect_data():
     #Fetch geotagged data from collection
     twts_result = maindb.economy_geolocation.find({}, {'__id' : False})

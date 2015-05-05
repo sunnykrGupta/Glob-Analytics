@@ -12,7 +12,7 @@ library(rgdal)
 library(leaflet)
 library(RColorBrewer)
 library(WDI)
-
+library(Hmisc)
 
 choropleth_topics <- function(file_string, colors = "Greens") {
   
@@ -42,7 +42,7 @@ choropleth_topics <- function(file_string, colors = "Greens") {
   }
   
   df <- read.csv(file=call_file,head=TRUE,sep=",")
-  df$score <- round(df$score, 1)
+#  df$score <- round(df$score, 1)
   
   #merging the data of the countries tile with the tweets for visulization
   countries2 <- merge(countries, 
@@ -51,7 +51,7 @@ choropleth_topics <- function(file_string, colors = "Greens") {
                       by.y = "iso2c",                    
                       sort = FALSE)
   
-  pal <- colorQuantile(colors, NULL, n = 5)
+  pal <- colorQuantile(colors, NULL, n = 5, probs = seq(0,1,0.25))
   
   country_popup <- paste0("<strong>Country : </strong>", 
                           countries2$country, 
@@ -68,7 +68,7 @@ choropleth_topics <- function(file_string, colors = "Greens") {
     addTiles(urlTemplate = stamen_tiles,  
              attribution = stamen_attribution) %>%
     setView(0, 0, zoom = 3) %>%
-    addPolygons(fillColor = ~pal(countries2$score), 
+    addPolygons(fillColor = ~pal(c(4:8)), 
                 fillOpacity = 0.8, 
                 color = "#BDBDC3", 
                 weight = 1, 

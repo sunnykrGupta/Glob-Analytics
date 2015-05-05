@@ -1,3 +1,7 @@
+
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
 #Import the necessary methods from tweepy library
 import os
 import json

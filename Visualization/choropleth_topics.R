@@ -24,7 +24,7 @@ choropleth_topics <- function(file_string, colors = "Greens") {
   
   #download.file(url, file)
   
-  unzip("/home/prat/work/ne_50m_admin_0_countries.zip", exdir = tmp)
+  unzip("Visualization/ne_50m_admin_0_countries.zip", exdir = tmp)
   
   countries <- readOGR(dsn = tmp, 
                        layer = "ne_50m_admin_0_countries", 
@@ -32,7 +32,7 @@ choropleth_topics <- function(file_string, colors = "Greens") {
                        verbose = FALSE)
   
   argument_frame = data.frame( match = c("economy", "religion", "politics", "tourism"),
-                               files = c("csv/geo_economy.csv", "csv/geo_religion.csv", "csv/geo_politic.csv", "csv/geo_tourism.csv")
+                               files = c("Visualization/csv/geo_economy.csv", "Visualization/csv/geo_religion.csv", "Visualization/csv/geo_politic.csv", "Visualization/csv/geo_tourism.csv")
   )
   
   call_file <- ""

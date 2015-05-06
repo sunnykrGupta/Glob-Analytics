@@ -32,7 +32,10 @@ choropleth_topics <- function(file_string, colors = "Greens") {
                        verbose = FALSE)
   
   argument_frame = data.frame( match = c("economy", "religion", "politics", "tourism"),
-                               files = c("Visualization/csv/geo_economy.csv", "Visualization/csv/geo_religion.csv", "Visualization/csv/geo_politic.csv", "Visualization/csv/geo_tourism.csv")
+                               files = c("Visualization/csv/geo_economy.csv", 
+                                         "Visualization/csv/geo_religion.csv", 
+                                         "Visualization/csv/geo_politic.csv", 
+                                         "Visualization/csv/geo_tourism.csv")
   )
   
   call_file <- ""
@@ -42,7 +45,7 @@ choropleth_topics <- function(file_string, colors = "Greens") {
   }
   
   df <- read.csv(file=call_file,head=TRUE,sep=",")
-  df[[score]] <- round(df[[score]], 1)
+  #df[[score]] <- round(df[[score]], 1)
   
   #merging the data of the countries tile with the tweets for visulization
   countries2 <- merge(countries, 
@@ -51,11 +54,11 @@ choropleth_topics <- function(file_string, colors = "Greens") {
                       by.y = "iso2c",                    
                       sort = FALSE)
   
-  pal <- colorQuantile(colors, NULL, n = 5)
+  pal <- colorQuantile(colors, NULL, n = 5, probs=seq(0,1,0.25))
   
   country_popup <- paste0("<strong>Country : </strong>", 
                           countries2$country, 
-                          "<br><strong>Tweets on </strong>", file_string,
+                          "<br><strong>Sentiment score on </strong>", file_string,
                           "<strong> : </string>",
                           as.character(countries2$score)  
   )
@@ -75,3 +78,6 @@ choropleth_topics <- function(file_string, colors = "Greens") {
                 popup = country_popup) 
   
 }
+
+# pol <- read.csv("Visualization/csv/geo_politic.csv",head=TRUE,sep=",")
+# quantile(pol$score)

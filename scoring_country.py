@@ -18,8 +18,8 @@ db_batch = client.batch_db
 collections = ["politic_final", "tourism_final", "economy_final",
             "religion_final"]
 
-def write_csv(record, country_score):
-
+def write_csv(country_score):
+    '''
     sorted_score = sorted(country_score.items(), key=itemgetter(1), reverse=True)
     #tell computer where to put top 15 country CSV file
     writer = csv.writer(open("religion_top15.csv",'wb'))     #Change
@@ -40,9 +40,10 @@ def write_csv(record, country_score):
         if(cnt >= 15):
             break
     print "Top 15 CSV!!"
+    '''
 
     #tell computer where to put politic final csv file
-    writer_topic = csv.writer(open("religion_stats.csv",'wb'))   # Change
+    writer_topic = csv.writer(open("economy_stats.csv",'wb'))   # Change
 
     #create a list with headings for our columns
     headers_topic = ['iso2c', 'country','lat', 'lng', 'all', 'score', 'positive', 'negative', 'neutral']
@@ -52,7 +53,7 @@ def write_csv(record, country_score):
     '''
         fetch the country records from collection
     '''
-    results = db_batch.religion_final.find({}, {'_id' :  False})       #Change
+    results = db_batch.economy_final.find({}, {'_id' :  False})       #Change
     for res in results:
         for con,values in res.iteritems():
             row = []
@@ -81,33 +82,45 @@ def calculate_score(total, positive, negative, neutral):
     score = tanh( (P1*3)+(P2*0.5) - P3)*10
     return score
 
+
+def low_tweets_score(v):
+    score = calculate_score(v['all'], v['positive'], v['negative'], v['neutral'])
+    if(score >= 9.00):
+        return score - 2.50
+    elif(score >= 8.00):
+        return score - 1.00
+    elif(score >= 2.00):
+        return score*0.8
+    elif(score <= 0.0):
+        return 3.5
+    else:
+        return score
+
+
 '''
     iterator function to score each country::
 '''
 def score_country():
-    #for making copy of changed records
-    result = {}
     #For keeping country score record and sorting to display top countries.
     top = {}
-    collections = db_batch.religion_final.find()             #Change
+    collections = db_batch.economy_final.find()             #Change
     for record in collections:
         for c,v in record.iteritems():
             if(c != '_id'):         # By pass ID key of MongoDB
                 if(v["all"] <= 50):
                     #provide a constant score to less tweeted country
-                    record[c]["score"] = 5.0
-                    result[c] = record[c]
-                    top[c] = 5.0
+                    record[c]["score"] = low_tweets_score(v)
+                    top[c] = record[c]
                 else:
+                    # SCORE Calc.
                     score = calculate_score(v["all"], v["positive"], v["negative"], v["neutral"])
                     record[c]["score"] = score
-                    result[c] = record[c]
-                    top[c] = score
+                    top[c] = record[c]
         #Save the changes after processing record keys
-        db_batch.religion_final.save(record)                 #Change
+        db_batch.economy_final.save(record)                 #Change
 
     #Data to csv file
-    write_csv(result, top)
+    write_csv(top)
     print "Docs score added and data file(csv) created!!"
 
 if __name__ == "__main__":

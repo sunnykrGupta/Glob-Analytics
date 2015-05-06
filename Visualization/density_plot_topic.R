@@ -14,7 +14,11 @@ library(leaflet)
 density_plot_topic <- function(file_string){
  
  argument_frame = data.frame( match = c("economy", "religion", "politics", "tourism", "overall"),
-                  files = c("csv/geo_economy.csv", "csv/geo_religion.csv", "csv/geo_politic.csv", "csv/geo_tourism.csv", "csv/world_tweets.csv")
+                  files = c("Visualization/csv/geo_economy.csv", 
+                            "Visualization/csv/geo_religion.csv", 
+                            "Visualization/csv/geo_politic.csv", 
+                            "Visualization/csv/geo_tourism.csv", 
+                            "Visualization/csv/world_tweets.csv")
  )
   
  call_file <- ""

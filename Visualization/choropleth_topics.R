@@ -78,6 +78,6 @@ choropleth_topics <- function(file_string, colors = "Greens") {
                 popup = country_popup) 
   
 }
-
-# pol <- read.csv("Visualization/csv/geo_politic.csv",head=TRUE,sep=",")
+ 
+#  pol <- read.csv("Visualization/csv/geo_politic.csv",head=TRUE,sep=",")
 # quantile(pol$score)

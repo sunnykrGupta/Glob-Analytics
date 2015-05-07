@@ -37,11 +37,11 @@ density_plot_topic <- function(file_string){
  )
 
  # dataframe for the radius assignment to the countries as per the tweets.
- maxsize <- 15000
- radii.df = data.frame( breaks = c(20, 50, 100, 500, 1000, 2000, 4000, 8000, maxsize), 
+ maxsize <- 40000
+ radii.df = data.frame( breaks = c(20, 50, 100, 1000, 2000, 4000, 8000, 15000, maxsize), 
  #                      color = c("darkblue", "lightseagreen", "green", 
  #                                "lightblue", "purple", "orange", "red","darkred","blue"),
-                      radius = c(5, 10, 15, 20, 25, 30, 35, 40, 45)
+                      radius = c(5, 10, 15, 20, 25, 30, 35, 40, 50)
  )
 
  # loop code for the assignment of radius column to the data frame

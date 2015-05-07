@@ -11,17 +11,13 @@ pol.df <- read.csv(file="Visualization/csv/top15_politic.csv",head=TRUE,sep=",")
 pol.df.1 <- melt(pol.df, id.vars = c("country", "score"))
 
 # Visualization of top 15 countries with proportion of pos, neg & ntrl tweets
-m1 = ggplot(data = pol.df.1) +
-  geom_bar(aes(x =  reorder(country, -value), y = value, fill = factor(variable)), stat = "identity")
+politic = ggplot(data = pol.df.1, aes(Country - Political , Positivity_Score)) +
+  geom_bar(aes(x =  reorder(country, -value), y = value, fill = factor(variable)), stat = "identity") +
+  xlab("Country - Political") + 
+  ylab("Positivty_Score")
 
-  print(m1)
 
-# Visualization of top 15 countries with score value
-m2 = ggplot(data = pol.df) +
-  geom_bar(aes(x = reorder(country, -score), y = score, fill="red"), stat = "identity")
-  
-  print(m2)
-
+  print(politic)
 
 # Tourism Top 15 Countries 
 # Statistics
@@ -30,16 +26,11 @@ tour.df <- read.csv(file="Visualization/csv/top15_tourism.csv",head=TRUE,sep=","
 tour.df.1 <- melt(tour.df, id.vars = c("country", "score"))
 
 # Visualization of top 15 countries with proportion of pos, neg & ntrl tweets
-m1 = ggplot(data = tour.df.1) +
-  geom_bar(aes(x =  reorder(country, -value), y = value, fill = factor(variable)), stat = "identity")
-
-print(m1)
-
-# Visualization of top 15 countries with score value
-m2 = ggplot(data = tour.df) +
-  geom_bar(aes(x = reorder(country, -score), y = score, fill="red"), stat = "identity")
-
-print(m2)
+tourism = ggplot(data = tour.df.1, aes(Country, Positivity_Score)) +
+  geom_bar(aes(x =  reorder(country, -value), y = value, fill = factor(variable)), stat = "identity")+
+  xlab("Country - Tourism") + 
+  ylab("Positivty_Score")
+print(tourism)
 
 # Economy Top 15 Countries
 # Statistics
@@ -47,15 +38,11 @@ eco.df <- read.csv(file="Visualization/csv/top15_economy.csv",head=TRUE,sep=",")
 # Melting the data [Wide to long]
 eco.df.1 <- melt(eco.df, id.vars = c("country", "score"))
 # Visualization of top 15 countries with proportion of pos, neg & ntrl tweets
-m1 = ggplot(data = eco.df.1) +
-  geom_bar(aes(x =  reorder(country, -value), y = value, fill = factor(variable)), stat = "identity")
-
-  print(m1)
-# Visualization of top 15 countries with score value
-m2 = ggplot(data = eco.df) +
-  geom_bar(aes(x = reorder(country, -score), y = score, fill="red"), stat = "identity")
-
-  print(m2)
+economy = ggplot(data = eco.df.1, aes(Country, Positivity_Score)) +
+  geom_bar(aes(x =  reorder(country, -value), y = value, fill = factor(variable)), stat = "identity")+
+  xlab("Country - Economical") + 
+  ylab("Positivty_Score")
+  print(economy)
 
 # Religion Top 15 Countries
 # Statistics
@@ -63,12 +50,9 @@ rel.df <- read.csv(file="Visualization/csv/top15_religion.csv",head=TRUE,sep=","
 # Melting the data [Wide to long]
 rel.df.1 <- melt(rel.df, id.vars = c("country", "score"))
 # Visualization of top 15 countries with proportion of pos, neg & ntrl tweets
-m1 = ggplot(data = rel.df.1) +
-  geom_bar(aes(x =  reorder(country, -value), y = value, fill = factor(variable)), stat = "identity")
+religion = ggplot(data = rel.df.1, aes(Country, Positivity_Score)) +
+  geom_bar(aes(x =  reorder(country, -value), y = value, fill = factor(variable)), stat = "identity")+
+  xlab("Country - Religion") + 
+  ylab("Positivty_Score")
 
-  print(m1)
-# Visualization of top 15 countries with score value
-m2 = ggplot(data = rel.df) +
-  geom_bar(aes(x = reorder(country, -score), y = score, fill="red"), stat = "identity")
-
-  print(m2)
+  print(religion)

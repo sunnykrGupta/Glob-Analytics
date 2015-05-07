@@ -23,6 +23,7 @@ def sort_apply(country_score):
 
 def fetch_data():
     results = db_batch.politic_final.find({}, {'_id' : False})      #Change
+    print "Docs :: ", results.count()
     docs = []
     for x in results:
         for c,v in x.iteritems():
@@ -34,10 +35,13 @@ def fetch_data():
             obj['neutral'] = v['neutral']
             obj['score'] = v['score']
             docs.append(obj)
+    #Sort the countries by score parameter
     top_country = sort_apply(docs)
+    for x in top_country:
+        print x['country'], x['score']
     cnt = 0
     top = []
-    print type(top_country)
+    #print type(top_country)
     for x in top_country:
         cnt += 1
         if(cnt > 15):

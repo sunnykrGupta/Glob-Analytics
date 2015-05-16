@@ -1,131 +1,85 @@
+# -*- coding: utf-8 -*-
 
-#! /usr/bin/env python
-
-import csv
 import json
-from math import tanh
-from operator import itemgetter
 from pymongo import MongoClient
 
+client = MongoClient('localhost', 27017)
 '''
     database : main_db
 '''
-client = MongoClient('localhost', 27017)
+db = client.main_db
 
-db_main = client.main_db
-db_batch = client.batch_db
+topic = ["politic_sentiment", "tourism_sentiment", "economy_sentiment", \
+        "religion_sentiment"]
 
-collections = ["politic_final", "tourism_final", "economy_final",
-            "religion_final"]
+#set according to above topic
+i = 3
 
-def write_csv(record, country_score):
+#Sentiment values of corrected tweets
+def sentiment_stats():
+    print "::", topic[0] ,  "::"
+    res = db.religion_sentiment.find({}, {'_id' : False})
+    cnt_pos, cnt_neg, cnt_ntrl = 0, 0, 0
+    for x in res:
+        if(x["polarity"] >= 0.20):
+            cnt_pos += 1;
+        elif(x["polarity"] <= -0.1):
+            cnt_neg += 1;
+        else:
+            cnt_ntrl += 1;
 
-    sorted_score = sorted(country_score.items(), key=itemgetter(1), reverse=True)
-    #tell computer where to put top 15 country CSV file
-    writer = csv.writer(open("economy_top15.csv",'wb'))     #Change
+    print "Positive :: %d" % (cnt_pos)
+    print "Negative :: %d" % (cnt_neg)
+    print "Neutral :: %d" % (cnt_ntrl)
 
-    #create a list with headings for our columns
-    headers = ['country', 'score']
 
-    #write the row of headings to our CSV file
-    writer.writerow(headers)
-
+#Single json data consists of all coutries stats (pos, neg, ntrl)
+def segregate_country():
+    print "::", topic[i] ,  "::"
+    result = db.religion_sentiment.find({}, {"_id" : False})
+    country_data = {}
     cnt = 0
-    for x in sorted_score:
-        cnt +=1
-        row = []
-        row.append(str(x[0].encode('utf-8')))
-        row.append(x[1])
-        writer.writerow(row)
-        if(cnt >= 15):
-            break
-    print "Top 15 CSV!!"
-
-    #tell computer where to put politic final csv file
-    writer_topic = csv.writer(open("economy_stats.csv",'wb'))   # Change
-
-    #create a list with headings for our columns
-    headers_topic = ['iso2c', 'country','lat', 'lng', 'all', 'score', 'positive', 'negative', 'neutral']
-
-    #write the row of headings to our CSV file
-    writer_topic.writerow(headers_topic)
-    '''
-        fetch the country records from collection
-    '''
-    results = db_batch.economy_final.find({}, {'_id' :  False})       #Change
-    for res in results:
-        for con,values in res.iteritems():
-            row = []
-            row.append(str(values["iso2c"].encode('utf-8')))
-            row.append(str(con.encode('utf-8')))
-            row.append(values["lat"])
-            row.append(values["lng"])
-            row.append(values["all"])
-            row.append(values["score"])
-            row.append(values["positive"])
-            row.append(values["negative"])
-            row.append(values["neutral"])
-            writer_topic.writerow(row)
-    print "Final Stats Complete for Visualization!!"
-
-
-'''
-    calculate_score to by formula : prob_positive*3 + prob_neutral*0.5 - prob_negative and taking inverse tangent.
-'''
-def calculate_score(total, positive, negative, neutral):
-    P1 = float(positive)/total
-    P2 = float(neutral)/total
-    P3 = float(negative)/total
-    #print (P1*3)+(P2*0.5) - (P3)
-    #Tanget Inverse to calculate_score between [0-1]
-    score = tanh( (P1*3)+(P2*0.5) - P3)*10
-    return score
-
-'''
-    iterator function to score each country::
-'''
-
-#Constant score for all tweets size less than 50
-#To avoid outliers data to misled actual scoring
-def constant_score(v_all):
-    if(v_all <= 5):
-        return 5.0
-    elif(v_all <= 10):
-        return 5.2
-    elif(v_all <= 20):
-        return 5.4
-    elif(v_all <= 30):
-        return 5.5
-    else:
-        return 5.6
-
-def score_country():
-    #for making copy of changed records
-    result = {}
-    #For keeping country score record and sorting to display top countries.
-    top = {}
-    collections = db_batch.economy_final.find()             #Change
-    for record in collections:
-        for c,v in record.iteritems():
-            if(c != '_id'):         # By pass ID key of MongoDB
-                if(v["all"] <= 50):
-                    #provide a constant score to less tweeted country
-                    cnst_score = constant_score(v["all"])
-                    record[c]["score"] = cnst_score
-                    result[c] = record[c]
-                    top[c] = cnst_score
+    for twt in result:
+        cnt += 1
+        if("place" in twt):
+            if("country" in twt["place"]):
+                place = twt["place"]["country"]
+                #add key if not exist
+                if(place not in country_data):
+                    country_data[place] = {}
+                    country_data[place]["positive"] = 0
+                    country_data[place]["negative"] = 0
+                    country_data[place]["neutral"] = 0
+                #check value of tweet
+                if(twt["polarity"] >= 0.20):
+                    country_data[place]["positive"] += 1
+                elif(twt["polarity"] <= -0.10):
+                    country_data[place]["negative"] += 1
                 else:
-                    score = calculate_score(v["all"], v["positive"], v["negative"], v["neutral"])
-                    record[c]["score"] = score
-                    result[c] = record[c]
-                    top[c] = score
-        #Save the changes after processing record keys
-        db_batch.economy_final.save(record)                 #Change
+                    country_data[place]["neutral"] += 1
+            else:
+                pass
+        else:
+            pass
+    #Writing to file
+    with open("rel_country.json", "w") as fw:
+        json.dump(country_data, fw)
+    #Save the Stats in Collection::
+    db.religion_country_stats.insert(country_data)
+    #print "Inserted Segregated Country Data!!"
 
-    #Data to csv file
-    write_csv(result, top)
-    print "Docs score added and data file(csv) created!!"
+
+# Count number of countries
+def count_country():
+    result = db.economy_country_stats.find({}, {"_id" : False})
+    print "::", topic[i], "::"
+    for r in result:
+        print  "Total Countries found : %d" % (len(r))
+
 
 if __name__ == "__main__":
-    score_country()
-    print "Country Scoring Complete!"
+    segregate_country()
+    count_country()
+    #sentiment_stats()
+
+    print "Stats Complete!!"

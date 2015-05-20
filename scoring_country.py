@@ -54,7 +54,6 @@ def calculate_score(total, positive, negative, neutral):
     P1 = float(positive)/total
     P2 = float(neutral)/total
     P3 = float(negative)/total
-    #print (P1*3)+(P2*0.5) - (P3)
     #Tanget Inverse to calculate_score between [0-1]
     score = tanh( (P1*3)+(P2*0.5) - P3)*10
     return score
@@ -99,5 +98,5 @@ def score_country():
     print "Docs score added and data file(csv) created!!"
 
 if __name__ == "__main__":
-    score_country()
+    #score_country()
     print "Country Scoring Complete!"

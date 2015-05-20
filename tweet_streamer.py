@@ -45,9 +45,10 @@ if __name__ ==  '__main__':
     stream = Stream(auth, streamListen())
 
     print "Tracking Starts:: Streaming ON"
-    '''
+
     #Data receiving related to Politics, Government
-    #stream.filter(track=['Government', 'Politics'])
+    stream.filter(track=['Government', 'Politics'])
+    '''
     #Data receiving related to Tourism
     stream.filter(track=['tourism','travel'])
     #Data receiving related to Economy, Market

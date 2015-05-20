@@ -23,7 +23,7 @@ def extract_text(rawtweet):
     return txt
 
 
-def clean_tweet(tweet):
+def tweet_filter(tweet):
     t = {}
     #User Tweet location extraction
     if("coordinates" in tweet):
@@ -60,7 +60,7 @@ def clean_tweet(tweet):
 
 def read_raw_data():
     # Querying all data documents
-    raw_twt = db.raw_tourism_data_2.find({}, {'__id' : False})
+    raw_twt = db.raw_tourism_data.find({}, {'__id' : False})
     #total tweets in DB
     print "Total documents - ", raw_twt.count()
     cnt = 0
@@ -70,7 +70,7 @@ def read_raw_data():
         #clean module
         cnt += 1
         print "Twt :: ", cnt
-        tweet = clean_tweet(rawtweet)
+        tweet = tweet_filter(rawtweet)
         if(tweet):
             # contains text and lang
             twt_text = extract_text(rawtweet)
@@ -82,7 +82,7 @@ def read_raw_data():
         else:
             pass
     #writing cleaned data into collection (politic_filtr)
-    results = db.t_tourism_filter_2.insert_many(cln_tweets)
+    results = db.t_tourism_filter.insert_many(cln_tweets)
     tot_insertion = results.inserted_ids
     print "Total insertion into collection :: %d" % (len(tot_insertion))
     print "Raw Politics Data Filtering Done....!!!"

@@ -112,14 +112,14 @@ def collect_data():
             cleantxt = TextBlob(cleantxt)
             #Sentiment score of clean tweet
             twt["polarity"] = cleantxt.sentiment.polarity
-            batch_tweets.append(twt)
+            #batch_tweets.append(twt)
             tweets_sentiment.append(twt)
         elif(twt['lang'] != 'und'):
             cleantxt = process_tweet(twt, False)
             twt["text"] = cleantxt
             tblob = TextBlob(cleantxt)
             twt["polarity"] = tblob.sentiment.polarity
-            batch_tweets.append(twt)
+            #batch_tweets.append(twt)
             tweets_sentiment.append(twt)
         else:
             pass
@@ -127,11 +127,11 @@ def collect_data():
         if(len(batch_tweets) == 100):
             print "Batch len:: ", len(batch_tweets)
             #batch backup collection insertion [Checkpointing processed data]
-            batchdb.economy_test_sentiment.insert_many(batch_tweets)
+            #batchdb.economy_test_sentiment.insert_many(batch_tweets)
             del batch_tweets[:]
             time.sleep(2)
     #Insertion into collection
-    records = maindb.economy_sentiment.insert_many(tweets_sentiment)
+    #records = maindb.economy_sentiment.insert_many(tweets_sentiment)
     rec_ids  = records.inserted_ids
     print "Inserted tweets after evaluation : %d" % (len(rec_ids))
 

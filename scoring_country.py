@@ -20,7 +20,7 @@ collections = ["politic_final", "tourism_final", "economy_final",
 
 def write_csv():
     #tell computer where to put politic final csv file
-    writer_topic = csv.writer(open("politic_final.csv",'wb'))   # Change
+    writer_topic = csv.writer(open("politic_final.csv",'wb'))   #CHNG_COLLEC.
 
     #create a list with headings for our columns
     headers_topic = ['iso2c', 'country','lat', 'lng', 'all', 'score', 'positive', 'negative', 'neutral']
@@ -30,7 +30,7 @@ def write_csv():
     '''
         fetch the country records from collection
     '''
-    results = db_batch.politic_final.find({}, {'_id' :  False})       #Change
+    results = db_batch.politic_final.find({}, {'_id' :  False})  #CHNG_COLLEC.
     for res in results:
         for con,values in res.iteritems():
             row = []
@@ -49,6 +49,7 @@ def write_csv():
 
 '''
     calculate_score to by formula : prob_positive*3 + prob_neutral*0.5 - prob_negative and taking inverse tangent.
+    TUNE VAR. VALUE ACCORDINGLY
 '''
 def calculate_score(total, positive, negative, neutral):
     P1 = float(positive)/total
@@ -79,10 +80,10 @@ def low_tweets_score(v):
 '''
 def score_country():
     #For keeping country score record and sorting to display top countries.
-    collections = db_batch.politic_final.find()             #Change
+    collections = db_batch.politic_final.find()      #CHNG_COLLEC.
     for record in collections:
         for c,v in record.iteritems():
-            if(c != '_id'):                 # By pass ID key of MongoDB
+            if(c != '_id'):                 # ByPass ID_key MongoDB
                 if(v["all"] <= 50):
                     #provide a constant score to less tweeted country
                     record[c]["score"] = low_tweets_score(v)
@@ -91,7 +92,7 @@ def score_country():
                     score = calculate_score(v["all"], v["positive"], v["negative"], v["neutral"])
                     record[c]["score"] = score
         #Save the changes after processing record keys
-        db_batch.politic_final.save(record)                 #Change
+        db_batch.politic_final.save(record)       #CHNG_COLLEC.
 
     #Save the changed Collection
     write_csv()

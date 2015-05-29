@@ -6,7 +6,7 @@ from math import fabs
 from spell import correct
 from scoring_country import calculate_score
 from Mongo.rawtwt_location_filter import tweet_filter
-from text_clean_sentiment import tweet_clean, clean_text
+from tweetClean_Sentiment import tweet_clean, clean_text
 
 
 
@@ -75,7 +75,8 @@ def test_tweet_filter():
                         },
                     }
 
-    with open("sample.json", "r") as fr:
+
+    with open("utils/sample.json", "r") as fr:
         for twt in fr:
             sample_twt = json.loads(twt)
             t_json =  tweet_filter(sample_twt)

@@ -18,7 +18,7 @@ i = 3
 #Sentiment values of corrected tweets
 def sentiment_stats():
     print "::", topic[0] ,  "::"
-    res = db.religion_sentiment.find({}, {'_id' : False})
+    res = db.religion_sentiment.find({}, {'_id' : False})    #CHNG_COLLEC.
     cnt_pos, cnt_neg, cnt_ntrl = 0, 0, 0
     for x in res:
         if(x["polarity"] >= 0.20):
@@ -36,7 +36,7 @@ def sentiment_stats():
 #Single json data consists of all coutries stats (pos, neg, ntrl)
 def segregate_country():
     print "::", topic[i] ,  "::"
-    result = db.religion_sentiment.find({}, {"_id" : False})
+    result = db.religion_sentiment.find({}, {"_id" : False})  #CHNG_COLLEC.
     country_data = {}
     cnt = 0
     for twt in result:
@@ -65,21 +65,23 @@ def segregate_country():
     with open("rel_country.json", "w") as fw:
         json.dump(country_data, fw)
     #Save the Stats in Collection::
-    db.religion_country_stats.insert(country_data)
+    db.religion_country_stats.insert(country_data)          #CHNG_COLLEC.
     #print "Inserted Segregated Country Data!!"
 
 
 # Count number of countries
 def count_country():
-    result = db.economy_country_stats.find({}, {"_id" : False})
+    result = db.economy_country_stats.find({}, {"_id" : False})  #CHNG_COLLEC.
     print "::", topic[i], "::"
     for r in result:
         print  "Total Countries found : %d" % (len(r))
 
 
 if __name__ == "__main__":
+    #Separate All countries counts of POS, NEG, NTRL Tweets
     segregate_country()
+    # Count total Countries participate in this analysis
     count_country()
-    #sentiment_stats()
-
+    # General Distribution of sentiment in different label (POS, NEG, NTRL)
+    sentiment_stats()
     print "Stats Complete!!"

@@ -22,7 +22,7 @@ Steps involved here for creating analytics:
 
 ## Instructions
 
-####Fork the repo into your account...
+#####Fork the repo into your account...
 
 Use `git clone` to your local machine:
 ```sh
@@ -36,9 +36,9 @@ $ pip install -r requirements.txt
 ```
 
 
-####Follow this link to set MongoDB for the first time : [Detailed Installation Instruction MongoDB](http://docs.mongodb.org/manual/installation/ )
+#####Follow this link to set MongoDB for the first time : [Detailed Installation Instruction MongoDB](http://docs.mongodb.org/manual/installation/ )
 
-####After this Install Rstudio for Visualization written in R :
+#####After this Install Rstudio for Visualization written in R :
 
 > Install the r programming language by following instructions: 
 ```sh

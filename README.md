@@ -1,5 +1,5 @@
 # Glob_Analytics
-Global Analytics is a system which crawls tweets from [Twitter](www.twitter.com) API, resolving location of tweets which are not geo-tagged using different [Geocoding](http://en.wikipedia.org/wiki/Geocoding) Map API, translate into english, correctify improper words of tweets and then analyzes the sentiment around a targeted topic (here i.e Governance, Economics, Religion, Tourism) with the help of [NLTK](http://www.nltk.org/) techniques with the help of [TextBlob](textblob.readthedocs.org) and generates the Visual Statistics on different Visualization techniques eg: Map, Histogram etc. 
+Global Analytics is a system which crawls tweets from [Twitter](www.twitter.com) API, resolving location of tweets which are not geo-tagged using different [Geocoding](http://en.wikipedia.org/wiki/Geocoding) Map API, translate into english, correctify improper words of tweets and then analyzes the sentiment around a targeted topic (here i.e Governance, Economics, Religion, Tourism) using [NLTK](http://www.nltk.org/) techniques with the help of [TextBlob](textblob.readthedocs.org) and generates the Visual Statistics on different Visualization techniques eg: Map, Histogram etc. 
 
 Steps involved here for creating analytics:
   - Crawling Twitter Data (Twitter API)
@@ -19,7 +19,7 @@ Steps involved here for creating analytics:
 5. Python 2.7+
 6. RStudio
 
-## Intructions
+## Instructions
 
 > Fork the repo into your account...
 
@@ -27,10 +27,13 @@ Use `git clone` to your local machine:
 ```sh
 git clone https://github.com/sunnykrGupta/Glob_Analytics.git
 ```
-> Install all dependencies defined in `requirements.txt` :
+
+Install all dependencies defined in `requirements.txt` :
+
 ```sh
 $ pip install -r requirements.txt
 ```
+
 
 > Follow this link to set MongoDB for the first time :
 
@@ -38,7 +41,7 @@ $ pip install -r requirements.txt
 
 > After this Install Rstudio for Visualization written in R :
 
-First Install the r programming language by following instructions: 
+Install the r programming language by following instructions: 
 ```sh
 # Install R
 $ sudo add-apt-repository "deb http://cran.rstudio.com/bin/linux/ubuntu $(lsb_release -cs)/"
@@ -46,6 +49,7 @@ $ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E084DAB9
 $ sudo apt-get update
 $ sudo apt-get install r-base r-base-dev
 ```
+
 > Now, Download the required package according to your Operating System. [Download RStudio](http://www.rstudio.com/products/rstudio/download)
 
 Once you have Rstudio up and running, Follow packages or libraries below that are needed for the visualization before running the R-script in your machine:
@@ -55,8 +59,7 @@ Once you have Rstudio up and running, Follow packages or libraries below that ar
 > install.packages('reshape2')
 > install.packages('maps')
 ```
-This command will install Leaflet in R that is ultimate boss of Map-VIZ. For the installation of the package “leaflet” one should have “devtools” package in your 
-R-studio, following command will take care of that : 
+This command will install Leaflet in R that is ultimate boss of Map-VIZ. For the installation of the package “leaflet” one should have “devtools” package in your R-studio, following command will take care of that : 
 ```
 > if (!require('devtools')) install.packages('devtools')
 > devtools::install_github('rstudio/leaflet')
@@ -69,12 +72,12 @@ the tweets, choropleth and graphical experience of the tweets.
  
 Choropleth
 
-![OpenStreet Map](https://www.dropbox.com/s/3bb3o96amlpthld/choropleth_religion.png "Choropleth Map")
+![OpenStreet Map](https://lh6.googleusercontent.com/x8rjKigNE0X18xYRknjk2oKDoqhBAwkYDtD4dUp96qPBCwRTATA1YRzT74Be-dz3qLZuh3Xm=w1342-h536-rw"Choropleth Map")
 
 Density of Tweets across world wide
 
-![OpenStreet Map](https://www.dropbox.com/s/200zybw1kf52mft/density_plot_religion.png?dl=0"density plot of tweets")
+![OpenStreet Map](https://lh4.googleusercontent.com/PUXwjyF6jGulPgSnLYzhyRovaiK9lXP6DlC5PDrJhOmeJMfQL5qmwIDIa_c_if_59eidroOW1tpRu_s=w1342-h536-rw "density plot of tweets")
 
 ## Developer
-1. [Sunny Kumar](www.linkedin.com/in/sunnyO4)
-2. [Prateek Sharma](www.linkedin.com/in/)
+1. [Sunny Kumar](https://www.linkedin.com/in/sunnyO4)
+2. [Prateek Sharma](https://www.facebook.com/prateek.sharma.10048)

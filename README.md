@@ -78,5 +78,5 @@ Choropleth
 ![OpenStreet Map](images/choropleth_religion.png "Choropleth Map")
 
 ## Developer
-1. [Sunny Kumar](https://www.linkedin.com/in/sunnyO4)
+1. [Sunny Kumar](https://in.linkedin.com/in/sunnykrgupta)
 2. [Prateek Sharma](https://www.facebook.com/prateek.sharma.10048)

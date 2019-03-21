@@ -1,5 +1,5 @@
 # Glob_Analytics
-=======================
+
 Global Analytics is a system which crawls tweets from [Twitter](www.twitter.com) API, resolving location of tweets which are not geo-tagged using different [Geocoding](http://en.wikipedia.org/wiki/Geocoding) Map API, translate into english, correctify improper words of tweets and then analyzes the sentiment around a targeted topic (here i.e Governance, Economics, Religion, Tourism) using [NLTK](http://www.nltk.org/) techniques with the help of [TextBlob](textblob.readthedocs.org) and generates the Visual Statistics on different Visualization techniques eg: Map, Histogram etc. 
 
 Steps involved here for creating analytics:
@@ -22,7 +22,7 @@ Steps involved here for creating analytics:
 
 ## Instructions
 
-#####Fork the repo into your account...
+##### Fork the repo into your account...
 
 Use `git clone` to your local machine:
 ```sh
@@ -36,9 +36,9 @@ $ pip install -r requirements.txt
 ```
 
 
-#####Follow this link to set MongoDB for the first time : [Detailed Installation Instruction MongoDB](http://docs.mongodb.org/manual/installation/ )
+##### Follow this link to set MongoDB for the first time : [Detailed Installation Instruction MongoDB](http://docs.mongodb.org/manual/installation/ )
 
-#####After this Install Rstudio for Visualization written in R :
+##### After this Install Rstudio for Visualization written in R :
 
 > Install the r programming language by following instructions: 
 ```sh
@@ -49,7 +49,7 @@ $ sudo apt-get update
 $ sudo apt-get install r-base r-base-dev
 ```
 
-#####Next, Download the required package according to your Operating System. [Download RStudio](http://www.rstudio.com/products/rstudio/download)
+##### Next, Download the required package according to your Operating System. [Download RStudio](http://www.rstudio.com/products/rstudio/download)
 
 Once you have Rstudio up and running, Follow packages or libraries below that are needed for the visualization before running the R-script in your machine:
 ```
